@@ -1,10 +1,8 @@
-// Dashboard.js
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import toast from 'react-hot-toast';
 import { formatDate } from '../utils';
 import productApi from '../services/productApi';
-
 
 const Loader = () => <span className="loader">Loading...</span>;
 
@@ -22,27 +20,19 @@ const Dashboard = () => {
     category: '',
     stock: '',
   });
-  const [loading, setLoading] = useState({
-    fetch: false,
-    create: false,
-    update: false,
-    delete: false,
-  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchProducts();
   }, [currentPage]);
 
   const fetchProducts = async () => {
-    setLoading(prev => ({ ...prev, fetch: true }));
     try {
       const data = await productApi.fetchProducts(currentPage);
       setProducts(data.data);
       setTotalPages(data.totalPages);
     } catch (error) {
       toast.error('Failed to fetch products');
-    } finally {
-      setLoading(prev => ({ ...prev, fetch: false }));
     }
   };
 
@@ -80,8 +70,7 @@ const Dashboard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const loadingKey = modalMode === 'create' ? 'create' : 'update';
-    setLoading(prev => ({ ...prev, [loadingKey]: true }));
+    setLoading(true);
     try {
       if (modalMode === 'create') {
         await productApi.createProduct(formData);
@@ -95,20 +84,17 @@ const Dashboard = () => {
     } catch (error) {
       toast.error('Operation failed');
     } finally {
-      setLoading(prev => ({ ...prev, [loadingKey]: false }));
+      setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    setLoading(prev => ({ ...prev, delete: true }));
     try {
       await productApi.deleteProduct(id);
       toast.success('Product deleted successfully');
       fetchProducts();
     } catch (error) {
       toast.error('Delete operation failed');
-    } finally {
-      setLoading(prev => ({ ...prev, delete: false }));
     }
   };
 
@@ -116,8 +102,8 @@ const Dashboard = () => {
     <div className="container">
       <div className="header">
         <h1>Products List</h1>
-        <button onClick={() => openModal('create')} className="create-btn" disabled={loading.create}>
-          {loading.create ? <Loader /> : 'Create New'}
+        <button onClick={() => openModal('create')} className="create-btn">
+          Create New
         </button>
       </div>
 
@@ -139,12 +125,12 @@ const Dashboard = () => {
               <td>{product.stock}</td>
               <td>{product.price.toFixed(0)}</td>
               <td>
-                <button onClick={() => openModal('edit', product)} className="edit-btn" disabled={loading.update}>
-                  {loading.update ? <Loader /> : 'Edit'}
+                <button onClick={() => openModal('edit', product)} className="edit-btn">
+                  Edit
                 </button>
                 <button onClick={() => openModal('view', product)} className="view-btn">Show</button>
-                <button onClick={() => handleDelete(product._id)} className="delete-btn" disabled={loading.delete}>
-                  {loading.delete ? <Loader /> : 'Delete'}
+                <button onClick={() => handleDelete(product._id)} className="delete-btn">
+                  Delete
                 </button>
               </td>
             </tr>
@@ -155,15 +141,15 @@ const Dashboard = () => {
       <div className="pagination">
         <button 
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
-          disabled={currentPage === 1 || loading.fetch}
+          disabled={currentPage === 1}
         >
-          {loading.fetch ? <Loader /> : '« Previous'}
+          « Previous
         </button>
         <button 
           onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
-          disabled={currentPage === totalPages || loading.fetch}
+          disabled={currentPage === totalPages}
         >
-          {loading.fetch ? <Loader /> : 'Next »'}
+          Next »
         </button>
       </div>
 
@@ -198,8 +184,8 @@ const Dashboard = () => {
               <label>Stock:</label>
               <input type="number" name="stock" value={formData.stock} onChange={handleInputChange} required />
             </div>
-            <button type="submit" className="submit-btn" disabled={loading.create || loading.update}>
-              {loading.create || loading.update ? <Loader /> : (modalMode === 'create' ? 'Create' : 'Update')}
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? <Loader /> : (modalMode === 'create' ? 'Create' : 'Update')}
             </button>
           </form>
         ) : (
