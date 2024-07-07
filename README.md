@@ -1,8 +1,31 @@
-# React + Vite
+# Product Management Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a Product Management Dashboard built with React, Vite, and Tailwind CSS. It provides CRUD (Create, Read, Update, Delete) operations for managing products, along with user authentication and password management features.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Authentication (Login with OTP)
+- Product Management (CRUD operations)
+- Pagination for product listing
+- Password recovery process
+- Responsive design using Tailwind CSS
+
+## Technologies Used
+
+- React
+- Vite
+- Tailwind CSS
+- Axios for API requests
+- React Modal for modal dialogs
+- React Hot Toast for notifications
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or later)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
